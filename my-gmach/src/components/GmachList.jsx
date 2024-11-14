@@ -3,12 +3,10 @@ import GmachCard from "./GmachCard";
 
 
 
-function GmachList() {
+function GmachList({gmachList, setGmachList}) {
   
-  const [gmachList, setGmachList] = useState([]);
   const fetchAllGmach = ()=>{  fetch("http://localhost:3005/all-gmach")  
     .then((response) => {
-  
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
