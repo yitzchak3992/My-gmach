@@ -33,3 +33,4 @@ yarn-error.log*
 example.js
 
 /my-gmach/src/components/ניסוי.js
+/my-gmach-server/mysqlCommands.js

@@ -1,14 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import GmachCard from "./GmachCard";
-import GmachModal from "./GmachModal";
-import GmachModal2 from "./GmachModal";
-import { gmachContext } from "../App";
+// import GmachModal2 from "./GmachModal";
+import { gmachContext } from "../../App";
+import GmachCardM from "./GmachCardM";
 
 
 export const modalContext = createContext()
 
 
-function GmachList() {
+function GmachListM() {
   
   const { gmachList, setGmachList } = useContext(gmachContext);
   const [openModal, setOpenModal] = useState(false)
@@ -47,13 +46,13 @@ function GmachList() {
     >
       <modalContext.Provider value={{openModal, setOpenModal, modalContent, setModalContent}}>
         {/* <GmachModal/> */}
-        <GmachModal2/>
+        {/* <GmachModal2/> */}
       {gmachList.map((obj, i) => (
-        <GmachCard gmach={obj} key={i} />
+        <GmachCardM gmach={obj} key={i} />
       ))}
       </modalContext.Provider>
     </div>
   );
 }
 
-export default GmachList;
+export default GmachListM;

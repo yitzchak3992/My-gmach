@@ -1,14 +1,13 @@
 import React from "react";
-import GoogleMap from "./GoogleMap";
+import MapGoogle from "./MapGoogle";
 
 function Map() {
   return (
     <div
       className="h-full w-full bg-white rounded-lg shadow-md"
-      style={{ backgroundColor: "chartreuse" }}
+      // style={{ backgroundColor: "chartreuse" }}
     >
-      Map
-      <GoogleMap />
+      <MapGoogle />
     </div>
   );
 }

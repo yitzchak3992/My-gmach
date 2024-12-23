@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import GmachCard from "./GmachCard";
-import GmachModal from "./GmachModal";
-import GmachModal2 from "./GmachModal";
-import { gmachContext } from "../App";
+import GmachCard from "../GmachCard";
+import GmachModal from "../GmachModal";
+import GmachModal2 from "../GmachModal";
+import { gmachContext } from "../../App";
 
 
 export const modalContext = createContext()

@@ -1,13 +1,37 @@
 import { Filter, Search, Star } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { gmachContext } from "../App";
 
-function Filters({ gmachList, setGmachList }) {
+
+
+function calculateDistance(userLat, userLon, pointLat, pointLon) {
+  const R = 6371; // 
+  const toRad = (value) => (value * Math.PI) / 180; // convert to radians 
+  const dLat = toRad(pointLat - userLat);
+  const dLon = toRad(pointLon - userLon);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(userLat)) *
+      Math.cos(toRad(pointLat)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // Distance in km
+}
+
+
+function Filters() {
+
   const elementSelectCity = useRef();
   const elementSelectCategory = useRef();
   const elementSelectRating = useRef();
+  const elementSelectDistance = useRef();
 
   const [cityOption, setCityOption] = useState([]);
   const [categoriesOption, setCategoriesOption] = useState([]);
+
+  const {userLocation, setUserLocation} = useContext(gmachContext)
+  const {  setGmachList } = useContext(gmachContext);
 
   const fetchOption = () => {
     fetch("http://localhost:3005/categories-and-city-option")
@@ -27,12 +51,28 @@ function Filters({ gmachList, setGmachList }) {
         console.error("Error:", error);
       });
   };
+  function getUserLocation() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setUserLocation({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude
+        })
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+      }
+    );}
+  
 
-  useEffect(fetchOption, []);
+  useEffect(() => {
+    fetchOption()
+    getUserLocation()}, []);
 
   const searchFilters = useRef({
     city: "",
     category: "",
+    distance:"",
     rating: "",
   });
 
@@ -55,7 +95,16 @@ function Filters({ gmachList, setGmachList }) {
         return response.json();
       })
       .then((data) => {
-        console.log("Gmach List:", data);
+        data.forEach((gmach) => {
+          gmach.latitude = parseFloat(gmach.latitude);
+          gmach.longitude = parseFloat(gmach.longitude);
+          gmach.rating = parseFloat(gmach.rating);
+        });
+        if(searchFilters.current.distance && userLocation.lat && userLocation.lon){
+           data = data.filter(gmach=>{
+            return calculateDistance(userLocation.lat, userLocation.lon, gmach.latitude, gmach.longitude) <= searchFilters.current.distance
+          })
+        }
         setGmachList([...data]);
       })
       .catch((error) => {
@@ -67,10 +116,9 @@ function Filters({ gmachList, setGmachList }) {
     <div className="w-full py-4 px-6 bg-gray-50">
       <div
         className="max-w-7xl mx-auto"
-        style={{ backgroundColor: "rgb(73, 51, 243)" }}
+        // style={{ backgroundColor: "rgb(73, 51, 243)" }}
       >
-        Filters
-        <div dir="rtl" className="bg-white rounded-lg shadow-sm p-4 mb-6">
+        <div dir="rtl" className="border border-primary bg-white rounded-lg shadow-sm p-4 mb-6">
           <div className="flex flex-wrap gap-4">
             <div className="flex items-center">
               <Filter className="h-5 w-5 text-gray-400 ml-2" />
@@ -83,8 +131,8 @@ function Filters({ gmachList, setGmachList }) {
                 }}
               >
                 <option value="">כל הערים</option>
-                {cityOption.map((city) => (
-                  <option value={city}>{city}</option> //onChange={handleCityChange}
+                {cityOption.map((city, i) => (
+                  <option value={city} key={i}>{city}</option>
                 ))}
               </select>
             </div>
@@ -99,11 +147,30 @@ function Filters({ gmachList, setGmachList }) {
                 }}
               >
                 <option value="">כל הקטגוריות</option>
-                {categoriesOption.map((category) => (
-                  <option value={category}>{category}</option>
+                {categoriesOption.map((category, i) => (
+                  <option value={category} key={i}>{category}</option>
                 ))}
               </select>
             </div>
+
+
+            <div className="flex items-center">
+              <Filter className="h-5 w-5 text-gray-400 ml-2" />
+              <select
+                ref={elementSelectDistance}
+                className="block w-40 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                onChange={(e) => {
+                  searchFilters.current.distance = e.target.value;
+                  getGmachList();
+                }}
+              >
+                <option value="">כל מרחק</option>
+                {["1", "3", "5", "10", "20","50","100"].map((kilometer, i) => (
+                  <option value={kilometer} key={i}>{kilometer} ק"מ</option>
+                ))}
+              </select>
+            </div>
+
 
             <div className="flex items-center">
               <Star className="h-5 w-5 text-gray-400 ml-2" />
