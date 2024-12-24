@@ -8,6 +8,7 @@ const { postComments } = require("../controllers/postComments");
 const { signup } = require("../controllers/signup");
 const { login } = require("../controllers/login");
 const { authenticateToken } = require("../controllers/authenticateToken");
+const { DeleteGmach } = require("../controllers/DeleteGmach");
 
 router.get("/all-gmach", getAllGmach);
 router.get("/categories-and-city-option", getOption);
@@ -16,5 +17,6 @@ router.get("/comments", getComments);
 router.post("/comments",authenticateToken, postComments);
 router.post("/signup", signup);
 router.post("/login", login);
+router.delete("/DeleteGmach", DeleteGmach);
 
 module.exports = router;
