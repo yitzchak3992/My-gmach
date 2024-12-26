@@ -23,6 +23,8 @@ function GmachListM() {
         return response.json();
       })
       .then((gmachObjectList) => {
+        console.log("gmachList:", gmachObjectList);
+
         // console.log("gmachObjectList:", gmachObjectList);
         gmachObjectList.forEach((gmach) => {
           gmach.latitude = parseFloat(gmach.latitude);
@@ -30,6 +32,7 @@ function GmachListM() {
           gmach.rating = parseFloat(gmach.rating);
         });
         setGmachList(gmachObjectList);
+        
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -48,7 +51,7 @@ function GmachListM() {
         {/* <GmachModal/> */}
         {/* <GmachModal2/> */}
       {gmachList.map((obj, i) => (
-        <GmachCardM gmach={obj} key={i} />
+        <GmachCardM gmach={obj} key={i} fetchAllGmach={fetchAllGmach}/>
       ))}
       </modalContext.Provider>
     </div>

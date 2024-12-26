@@ -3,10 +3,17 @@ const connection = require("../SQL_config/sql")
 
 const getAllGmach =  async (req, res) => {
     try {
-      const query = ` select  * ,categories.name as category from gmach_list
+      const query = ` select  gmach_list.id, gmach_list.name, description, address, city, phone,email, latitude, longitude,
+                      rating, image_url, opening_hours,  place_id, created_by,
+                      categories.name as category from gmach_list
                       join gmach_categories 
                       on gmach_list.id = gmach_categories.gmach_id
                       join categories on gmach_categories.category_id = categories.id `;
+
+      // const query =  `select  * ,categories.name as category from gmach_list
+      //                 join gmach_categories 
+      //                 on gmach_list.id = gmach_categories.gmach_id
+      //                 join categories on gmach_categories.category_id = categories.id` ;
       connection.query(query, (error, results) => {
         if (error) {
           console.error("Error retrieving data:", error);

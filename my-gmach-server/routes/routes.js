@@ -17,6 +17,6 @@ router.get("/comments", getComments);
 router.post("/comments",authenticateToken, postComments);
 router.post("/signup", signup);
 router.post("/login", login);
-router.delete("/DeleteGmach", DeleteGmach);
+router.delete("/DeleteGmach", authenticateToken, DeleteGmach);
 
 module.exports = router;
